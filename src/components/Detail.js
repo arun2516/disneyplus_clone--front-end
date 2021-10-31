@@ -1,13 +1,34 @@
-import React from 'react'
-import styled from 'styled-components'
+import React,{ useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { useParams } from "react-router-dom";
+import db from '../firebase';
+
 function Detail() {
+
+const { id } = useParams();
+const [ dmovie, setMovie ] = useState({});
+
+
+    useEffect(() => {
+        db.collection("movies")
+        .doc(id)
+        .get()
+        .then((doc)=>{
+            if(doc.exists){
+               setMovie(doc.data());
+            }else{
+
+            }
+        })
+    }, [id])
+  
     return (
         <Container>
            <Background>
-               <img src="https://lh3.googleusercontent.com/proxy/hCQQgS3GboLzeUGGdyxiAtdufPCCct5NimUWKRgcLvIuGvO5_4JhA5aG9GjAeJjU4TsB2wZBAzm0EttNKcR6svslymeYRoMmiiZyvTFKJ1xMvcutgTmp-O3Go7jErJxd3WBDtEtnd41U8oJT00mAatowNeQfrNrMqnX6KmRQIPWaIL5SMaBaShFYqJ0v-_4y-33t7ms2pe5NbfWOdyN5xE_6N2NRaSFj"/>
+               <img src={dmovie.backgroundImg}/>
            </Background>
            <ImageTitle>
-               <img src="https://images.squarespace-cdn.com/content/v1/51cdafc4e4b09eb676a64e68/1522856074944-CXPZQOKB9OJLBMB1F678/bau_poster.jpg"/>
+               <img src={dmovie.titleImg}/>
            </ImageTitle>
            <Controls>
                <PlayButton>
@@ -26,10 +47,10 @@ function Detail() {
                </GroupWatchButton>
            </Controls>
            <SubTitle>
-               2018 . 7m . Family, Fantasy, Kids, Animation
+               {dmovie.subTitle}
            </SubTitle>
            <Description>
-           An ageing Chinese mother, feeling alone when her child moves out, gets a second chance at motherhood when one of her dumplings comes to life.
+                {dmovie.description}
            </Description>
         </Container>
     )
@@ -58,14 +79,14 @@ img{
 }
 `
 const ImageTitle= styled.div`
-height: 30vh;
+height: 40vh;
 min-height: 170px;
 width: 35vw;
 min-width: 200px;
 img{
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 `
